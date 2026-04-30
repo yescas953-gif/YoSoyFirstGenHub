@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA Youth Opportunities Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #F5A623; --gold-light: #FFF3DC; --gold-dark: #C47D0A;
+    --navy: #0D1B3E; --navy-mid: #1A2F5A; --navy-light: #2A4A8A;
+    --teal: #00C2A8; --teal-light: #E0FAF7; --teal-dark: #007A6B;
+    --coral: #FF5F5F; --coral-light: #FFF0F0;
+    --green: #2ECC71; --green-light: #E8FAF0;
+    --purple: #7C3AED; --purple-light: #EDE9FE;
+    --bg: #F8F9FC; --white: #FFFFFF;
+    --text: #0D1B3E; --text-muted: #6B7A99;
+    --border: #E2E8F0;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  .site-header { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, var(--navy-light) 100%); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .header-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--white); display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; text-decoration: none; }
+  .logo-icon { width: 36px; height: 36px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .logo-sub { font-size: 11px; font-weight: 400; opacity: 0.7; letter-spacing: 2px; text-transform: uppercase; display: block; }
+  .lang-toggle { display: flex; gap: 4px; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 3px; }
+  .lang-btn { padding: 5px 14px; border-radius: 16px; border: none; cursor: pointer; font-family: var(--font-body); font-size: 12px; font-weight: 600; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.6); }
+  .lang-btn.active { background: var(--gold); color: var(--navy); }
+  .nav-tabs { display: flex; gap: 0; overflow-x: auto; padding: 0 24px; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { padding: 11px 20px; border: none; background: transparent; color: rgba(255,255,255,0.55); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .nav-tab:hover { color: rgba(255,255,255,0.85); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .deadline-banner { background: var(--gold); padding: 10px 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .deadline-label { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--navy); }
+  .deadline-pills { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+  .deadline-pill { background: rgba(13,27,62,0.12); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: var(--navy); cursor: pointer; transition: background 0.2s; border: 1.5px solid rgba(13,27,62,0.2); }
+  .deadline-pill:hover { background: rgba(13,27,62,0.2); }
+  .deadline-pill.urgent { background: var(--navy); color: var(--gold); border-color: var(--navy); }
+
+  .main { padding: 24px; max-width: 1100px; margin: 0 auto; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); border-radius: 20px; padding: 40px; margin-bottom: 28px; position: relative; overflow: hidden; color: var(--white); }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -40px; width: 240px; height: 240px; background: radial-gradient(circle, rgba(245,166,35,0.3) 0%, transparent 70%); }
+  .hero-content { position: relative; z-index: 1; max-width: 600px; }
+  .hero h1 { font-family: var(--font-display); font-size: 36px; font-weight: 800; line-height: 1.1; margin-bottom: 12px; }
+  .hero h1 span { color: var(--gold); }
+  .hero p { font-size: 16px; opacity: 0.8; line-height: 1.6; margin-bottom: 20px; }
+  .hero-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+  .hero-stat .num { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--gold); }
+  .hero-stat .lab { font-size: 11px; opacity: 0.65; text-transform: uppercase; letter-spacing: 1px; }
+
+  .section-header { margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+  .section-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+  .section-badge { background: var(--gold-light); color: var(--gold-dark); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); color: var(--text-muted); font-family: var(--font-body); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .filter-btn:hover { border-color: var(--gold); color: var(--text); }
+  .filter-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .program-card { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); overflow: hidden; transition: all 0.25s; cursor: pointer; }
+  .program-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .card-accent { height: 5px; }
+  .card-body { padding: 18px; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+  .card-org { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+  .card-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
+  .card-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .meta-tag { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .tag-paid { background: var(--green-light); color: #1a7a45; }
+  .tag-unpaid { background: var(--purple-light); color: #5b21b6; }
+  .tag-summer { background: var(--gold-light); color: var(--gold-dark); }
+  .tag-yearround { background: #E0F2FE; color: #075985; }
+  .tag-volunteer { background: var(--coral-light); color: #c0392b; }
+  .card-deadline { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .deadline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); flex-shrink: 0; }
+  .deadline-dot.soon { background: var(--coral); animation: pulse 1.2s infinite; }
+  .deadline-dot.ok { background: var(--green); }
+  .deadline-dot.future { background: var(--text-muted); }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+
+  .resume-intro { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); padding: 28px; margin-bottom: 24px; }
+  .resume-intro h2 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .resume-intro p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+  .resume-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .resume-card { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); padding: 20px; transition: all 0.2s; cursor: pointer; }
+  .resume-card:hover { border-color: var(--gold); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .resume-preview { background: var(--bg); border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 14px; font-size: 11px; line-height: 1.5; }
+  .resume-name { font-weight: 800; font-size: 14px; text-align: center; margin-bottom: 2px; }
+  .resume-contact { text-align: center; color: var(--text-muted); margin-bottom: 8px; font-size: 10px; }
+  .resume-section { font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1.5px solid var(--navy); padding-bottom: 2px; margin: 8px 0 4px; }
+  .resume-line { height: 5px; background: var(--border); border-radius: 2px; margin-bottom: 3px; }
+  .resume-line.short { width: 60%; }
+  .resume-line.med { width: 80%; }
+  .resume-type { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .resume-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
+  .btn-download { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: 1.5px solid var(--navy); background: transparent; color: var(--navy); font-family: var(--font-body); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; justify-content: center; }
+  .btn-download:hover { background: var(--navy); color: var(--white); }
+
+  .tips-box { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); border-radius: 16px; padding: 24px; color: var(--white); }
+  .tips-box h3 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .tip-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,255,255,0.12); }
+  .tip-num { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
+  .tip-text { font-size: 13px; opacity: 0.8; line-height: 1.5; }
+
+  .calendar-grid { display: grid; gap: 12px; margin-bottom: 24px; }
+  .deadline-row { background: var(--white); border-radius: 12px; border: 1.5px solid var(--border); padding: 16px 20px; display: flex; align-items: center; gap: 16px; transition: all 0.2s; cursor: pointer; }
+  .deadline-row:hover { border-color: var(--gold); }
+  .date-badge { min-width: 56px; text-align: center; background: var(--navy); border-radius: 10px; padding: 8px; }
+  .date-month { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: 700; }
+  .date-day { font-size: 22px; font-weight: 800; color: var(--white); line-height: 1; font-family: var(--font-display); }
+  .deadline-info { flex: 1; }
+  .deadline-prog { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .deadline-detail { font-size: 12px; color: var(--text-muted); }
+  .urgency-badge { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .urgency-critical { background: #FEE2E2; color: #b91c1c; }
+  .urgency-soon { background: var(--gold-light); color: var(--gold-dark); }
+  .urgency-upcoming { background: var(--green-light); color: #16a34a; }
+  .urgency-expired { background: #F1F5F9; color: #94A3B8; }
+
+  .about-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .resource-card { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); padding: 20px; transition: all 0.2s; }
+  .resource-card:hover { border-color: var(--teal); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .resource-icon { font-size: 28px; margin-bottom: 12px; }
+  .resource-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .resource-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: 20px; max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 28px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+  .modal h2 { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .modal-org { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+  .modal-section { margin-bottom: 16px; }
+  .modal-section h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+  .modal-section p, .modal-section li { font-size: 14px; line-height: 1.6; color: var(--text); }
+  .modal-section ul { padding-left: 18px; }
+  .modal-section li { margin-bottom: 4px; }
+  .modal-apply { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-family: var(--font-body); font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-top: 20px; }
+  .modal-apply:hover { background: var(--navy-light); }
+
+  .search-bar { display: flex; gap: 12px; margin-bottom: 20px; }
+  .search-input { flex: 1; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--white); font-family: var(--font-body); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s; }
+  .search-input:focus { border-color: var(--gold); }
+
+  .last-updated { font-size: 11px; color: var(--text-muted); text-align: center; padding: 16px; }
+
+  @media (max-width: 600px) {
+    .main { padding: 16px; }
+    .hero { padding: 24px; }
+    .hero h1 { font-size: 26px; }
+    .header-top { padding: 10px 16px 8px; }
+    .nav-tabs { padding: 0 12px; }
+    .nav-tab { padding: 10px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <a href="#" class="logo" onclick="showTab('home');return false;">
+      <div class="logo-icon">🌟</div>
+      <div>
+        LA Youth Opportunities
+        <span class="logo-sub">Internships · Volunteer · Careers</span>
+      </div>
+    </a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('home')">🏠 <span data-en="Home" data-es="Inicio">Home</span></button>
+    <button class="nav-tab" onclick="showTab('paid')">💼 <span data-en="Paid Internships" data-es="Pasantías Pagadas">Paid Internships</span></button>
+    <button class="nav-tab" onclick="showTab('unpaid')">🎓 <span data-en="Free Programs" data-es="Programas Gratuitos">Free Programs</span></button>
+    <button class="nav-tab" onclick="showTab('volunteer')">❤️ <span data-en="Volunteer" data-es="Voluntariado">Volunteer</span></button>
+    <button class="nav-tab" onclick="showTab('resumes')">📄 <span data-en="Resume Help" data-es="Currículum">Resume Help</span></button>
+    <button class="nav-tab" onclick="showTab('deadlines')">📅 <span data-en="Deadlines" data-es="Fechas Límite">Deadlines</span></button>
+    <button class="nav-tab" onclick="showTab('college')">🏛️ <span data-en="College Apps" data-es="Solicitudes Uni.">College Apps</span></button>
+    <button class="nav-tab" onclick="showTab('resources')">🔗 <span data-en="Resources" data-es="Recursos">Resources</span></button>
+  </nav>
+</header>
+
+<div class="deadline-banner" id="deadline-banner">
+  <span>⏰</span>
+  <span class="deadline-label" data-en="Upcoming Deadlines:" data-es="Próximas Fechas:">Upcoming Deadlines:</span>
+  <div class="deadline-pills" id="banner-pills"></div>
+</div>
+
+<main class="main">
+
+  <!-- HOME -->
+  <div id="tab-home" class="tab-content active">
+    <div class="hero">
+      <div class="hero-content">
+        <h1><span data-en="Your Future " data-es="Tu Futuro ">Your Future </span><span style="color:var(--gold)" data-en="Starts Here." data-es="Comienza Aquí.">Starts Here.</span></h1>
+        <p data-en="Discover paid internships, free programs, and volunteer opportunities across Los Angeles — built for high school students like you." data-es="Descubre pasantías pagadas, programas gratuitos y oportunidades de voluntariado en Los Ángeles, diseñadas para estudiantes de preparatoria como tú.">Discover paid internships, free programs, and volunteer opportunities across Los Angeles — built for high school students like you.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num">25+</div><div class="lab" data-en="Programs" data-es="Programas">Programs</div></div>
+          <div class="hero-stat"><div class="num">$0</div><div class="lab" data-en="Cost to Apply" data-es="Costo de Aplicar">Cost to Apply</div></div>
+          <div class="hero-stat"><div class="num">9–12</div><div class="lab" data-en="All Grades" data-es="Todos los Grados">All Grades</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-header">
+      <h2 class="section-title">⚡ <span data-en="Featured Programs" data-es="Programas Destacados">Featured Programs</span></h2>
+      <span class="section-badge" data-en="Apply Now" data-es="Aplicar Ahora">Apply Now</span>
+    </div>
+    <div class="cards-grid" id="featured-grid"></div>
+    <div style="text-align:center;margin:8px 0 32px;">
+      <button onclick="showTab('paid')" style="padding:12px 28px;background:var(--navy);color:white;border:none;border-radius:10px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;" data-en="View All Programs →" data-es="Ver Todos los Programas →">View All Programs →</button>
+    </div>
+  </div>
+
+  <!-- PAID -->
+  <div id="tab-paid" class="tab-content">
+    <div class="section-header">
+      <h2 class="section-title">💼 <span data-en="Paid Internships" data-es="Pasantías Pagadas">Paid Internships</span></h2>
+    </div>
+    <div class="search-bar"><input class="search-input" id="search-paid" data-en-ph="Search paid programs..." data-es-ph="Buscar pasantías pagadas..." placeholder="Search paid programs..." oninput="filterCards('paid')"></div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('paid','all',this)" data-en="All" data-es="Todos">All</button>
+      <button class="filter-btn" onclick="setFilter('paid','summer',this)" data-en="Summer" data-es="Verano">Summer</button>
+      <button class="filter-btn" onclick="setFilter('paid','yearround',this)" data-en="Year-Round" data-es="Todo el Año">Year-Round</button>
+    </div>
+    <div class="cards-grid" id="paid-grid"></div>
+  </div>
+
+  <!-- FREE -->
+  <div id="tab-unpaid" class="tab-content">
+    <div class="section-header">
+      <h2 class="section-title">🎓 <span data-en="Free Programs & Fellowships" data-es="Programas Gratuitos y Becas">Free Programs & Fellowships</span></h2>
+    </div>
+    <div class="search-bar"><input class="search-input" id="search-unpaid" data-en-ph="Search free programs..." data-es-ph="Buscar programas gratuitos..." placeholder="Search free programs..." oninput="filterCards('unpaid')"></div>
+    <div class="cards-grid" id="unpaid-grid"></div>
+  </div>
+
+  <!-- VOLUNTEER -->
+  <div id="tab-volunteer" class="tab-content">
+    <div class="section-header">
+      <h2 class="section-title">❤️ <span data-en="Volunteer Opportunities" data-es="Oportunidades de Voluntariado">Volunteer Opportunities</span></h2>
+    </div>
+    <div class="search-bar"><input class="search-input" id="search-volunteer" data-en-ph="Search volunteer programs..." data-es-ph="Buscar voluntariado..." placeholder="Search volunteer programs..." oninput="filterCards('volunteer')"></div>
+    <div class="cards-grid" id="volunteer-grid"></div>
+  </div>
+
+  <!-- RESUMES -->
+  <div id="tab-resumes" class="tab-content">
+    <div class="resume-intro">
+      <h2>📄 <span data-en="Resume Templates for Students" data-es="Plantillas de Currículum para Estudiantes">Resume Templates for Students</span></h2>
+      <p data-en="Choose a template below that matches the type of program you're applying to. Click 'Use Template' to get a full guide with tips and examples." data-es="Elige una plantilla según el tipo de programa. Haz clic en 'Usar Plantilla' para obtener una guía completa con consejos y ejemplos.">Choose a template that matches the program you're applying to.</p>
+    </div>
+    <div class="resume-grid">
+      <div class="resume-card" onclick="openResumeModal('first')">
+        <div class="resume-preview">
+          <div class="resume-name">YOUR NAME</div>
+          <div class="resume-contact">email@gmail.com · (323) 555-0000 · Los Angeles, CA</div>
+          <div class="resume-section">OBJECTIVE</div><div class="resume-line"></div>
+          <div class="resume-section">EDUCATION</div><div class="resume-line"></div><div class="resume-line short"></div>
+          <div class="resume-section">ACTIVITIES</div><div class="resume-line"></div><div class="resume-line med"></div>
+          <div class="resume-section">SKILLS</div><div class="resume-line short"></div>
+        </div>
+        <div class="resume-type">🌟 <span data-en="First Internship Resume" data-es="Primer Currículum">First Internship Resume</span></div>
+        <div class="resume-desc" data-en="Perfect if you have no work experience. Highlights academics, clubs, and skills." data-es="Ideal si no tienes experiencia laboral. Resalta tus materias, clubes y habilidades.">Perfect if you have no work experience.</div>
+        <button class="btn-download" data-en="Use Template ↗" data-es="Usar Plantilla ↗">Use Template ↗</button>
+      </div>
+      <div class="resume-card" onclick="openResumeModal('volunteer')">
+        <div class="resume-preview">
+          <div class="resume-name">YOUR NAME</div>
+          <div class="resume-contact">email@gmail.com · (323) 555-0000</div>
+          <div class="resume-section">VOLUNTEER EXPERIENCE</div><div class="resume-line"></div><div class="resume-line med"></div>
+          <div class="resume-section">EDUCATION</div><div class="resume-line"></div>
+          <div class="resume-section">LEADERSHIP</div><div class="resume-line"></div><div class="resume-line short"></div>
+          <div class="resume-section">LANGUAGES</div><div class="resume-line short"></div>
+        </div>
+        <div class="resume-type">❤️ <span data-en="Volunteer-Focused Resume" data-es="Currículum de Voluntariado">Volunteer-Focused Resume</span></div>
+        <div class="resume-desc" data-en="Highlights community service and leadership. Great for hospital or library programs." data-es="Resalta servicio comunitario y liderazgo. Ideal para hospitales o bibliotecas.">Highlights community service and leadership.</div>
+        <button class="btn-download" data-en="Use Template ↗" data-es="Usar Plantilla ↗">Use Template ↗</button>
+      </div>
+      <div class="resume-card" onclick="openResumeModal('stem')">
+        <div class="resume-preview">
+          <div class="resume-name">YOUR NAME</div>
+          <div class="resume-contact">email@gmail.com · GitHub: username</div>
+          <div class="resume-section">TECHNICAL SKILLS</div><div class="resume-line"></div><div class="resume-line short"></div>
+          <div class="resume-section">PROJECTS</div><div class="resume-line"></div><div class="resume-line med"></div>
+          <div class="resume-section">EDUCATION</div><div class="resume-line"></div>
+          <div class="resume-section">AWARDS</div><div class="resume-line short"></div>
+        </div>
+        <div class="resume-type">🔬 <span data-en="STEM / Research Resume" data-es="Currículum STEM / Investigación">STEM / Research Resume</span></div>
+        <div class="resume-desc" data-en="Built for science, tech, or research programs. Showcases projects and technical skills." data-es="Para programas de ciencia o tecnología. Muestra proyectos y habilidades técnicas.">Built for science, tech, or research programs.</div>
+        <button class="btn-download" data-en="Use Template ↗" data-es="Usar Plantilla ↗">Use Template ↗</button>
+      </div>
+      <div class="resume-card" onclick="openResumeModal('leadership')">
+        <div class="resume-preview">
+          <div class="resume-name">YOUR NAME</div>
+          <div class="resume-contact">email@gmail.com · LinkedIn: /in/yourname</div>
+          <div class="resume-section">LEADERSHIP & SERVICE</div><div class="resume-line"></div><div class="resume-line med"></div>
+          <div class="resume-section">EXPERIENCE</div><div class="resume-line"></div>
+          <div class="resume-section">EDUCATION</div><div class="resume-line"></div>
+          <div class="resume-section">HONORS</div><div class="resume-line short"></div>
+        </div>
+        <div class="resume-type">🏆 <span data-en="Leadership / Business Resume" data-es="Currículum de Liderazgo">Leadership / Business Resume</span></div>
+        <div class="resume-desc" data-en="For USC Bovard, Riordan, or GFL. Emphasizes leadership and initiative." data-es="Para USC Bovard, Riordan o GFL. Enfatiza liderazgo e iniciativa.">For USC Bovard, Riordan, or GFL.</div>
+        <button class="btn-download" data-en="Use Template ↗" data-es="Usar Plantilla ↗">Use Template ↗</button>
+      </div>
+    </div>
+    <div class="tips-box">
+      <h3>✅ <span data-en="Resume Tips for Students" data-es="Consejos para tu Currículum">Resume Tips for Students</span></h3>
+      <div class="tips-grid">
+        <div class="tip-item"><div class="tip-num">01</div><div class="tip-text" data-en="Keep it to 1 page — always." data-es="Siempre máximo 1 página.">Keep it to 1 page — always.</div></div>
+        <div class="tip-item"><div class="tip-num">02</div><div class="tip-text" data-en="Use action verbs: Led, Created, Organized, Managed." data-es="Usa verbos de acción: Lideré, Creé, Organicé.">Use action verbs: Led, Created, Organized.</div></div>
+        <div class="tip-item"><div class="tip-num">03</div><div class="tip-text" data-en="Quantify impact: '200+ students reached' beats 'helped students.'" data-es="Cuantifica: '+200 estudiantes alcanzados' es mejor que 'ayudé estudiantes.'">Quantify impact with numbers whenever possible.</div></div>
+        <div class="tip-item"><div class="tip-num">04</div><div class="tip-text" data-en="Tailor each resume to the specific program's keywords." data-es="Adapta el currículum a cada programa específico.">Tailor each resume to the program's keywords.</div></div>
+        <div class="tip-item"><div class="tip-num">05</div><div class="tip-text" data-en="List GPA if 3.0+ and include relevant AP/IB courses." data-es="Incluye tu GPA si es 3.0 o más y cursos AP/IB.">Include GPA if 3.0+ and strong AP/IB courses.</div></div>
+        <div class="tip-item"><div class="tip-num">06</div><div class="tip-text" data-en="Have a counselor or teacher review it before submitting." data-es="Pídele a un consejero o maestro que lo revise antes.">Have a counselor or teacher review before submitting.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEADLINES -->
+  <div id="tab-deadlines" class="tab-content">
+    <div class="section-header">
+      <h2 class="section-title">📅 <span data-en="Important Deadlines 2025" data-es="Fechas Límite Importantes 2025">Important Deadlines 2025</span></h2>
+      <span class="section-badge" data-en="Auto-Updated!" data-es="¡Auto-Actualizado!">Auto-Updated!</span>
+    </div>
+    <div class="calendar-grid" id="deadline-list"></div>
+    <div class="last-updated" id="last-updated-text"></div>
+  </div>
+
+  <!-- COLLEGE APPS -->
+  <div id="tab-college" class="tab-content">
+    <div class="hero" style="margin-bottom:24px;">
+      <div class="hero-content">
+        <h1><span data-en="Start Early. " data-es="Empieza Temprano. ">Start Early. </span><span style="color:var(--gold)" data-en="Apply Smart." data-es="Aplica con Inteligencia.">Apply Smart.</span></h1>
+        <p data-en="The best college applications are built over years, not months. This guide walks you through everything — from 9th grade to hitting submit." data-es="Las mejores solicitudes universitarias se construyen en años, no en meses. Esta guía te lleva desde el grado 9 hasta presionar enviar.">The best college applications are built over years, not months. Start now — every grade counts.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num">9th</div><div class="lab" data-en="Grade to Start" data-es="Grado para Empezar">Grade to Start</div></div>
+          <div class="hero-stat"><div class="num">Nov 1</div><div class="lab" data-en="EA/ED Deadline" data-es="Fecha EA/ED">EA/ED Deadline</div></div>
+          <div class="hero-stat"><div class="num">Jan 1</div><div class="lab" data-en="RD Deadline" data-es="Fecha RD">RD Deadline</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRADE-BY-GRADE TIMELINE -->
+    <div class="section-header">
+      <h2 class="section-title">📅 <span data-en="Your College Prep Timeline" data-es="Tu Línea de Tiempo de Preparación">Your College Prep Timeline</span></h2>
+    </div>
+
+    <div style="display:grid;gap:12px;margin-bottom:32px;">
+      <div style="background:var(--white);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;">
+        <div style="background:#2774AE;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+          <span style="background:white;color:#2774AE;font-family:var(--font-display);font-weight:800;font-size:14px;padding:4px 12px;border-radius:20px;">9th Grade</span>
+          <span style="color:rgba(255,255,255,0.85);font-size:13px;" data-en="Build the foundation" data-es="Construye las bases">Build the foundation</span>
+        </div>
+        <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Take the most challenging courses you can handle" data-es="Toma los cursos más desafiantes que puedas manejar">Take the most challenging courses you can handle</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Join 1–2 clubs or activities you genuinely enjoy" data-es="Únete a 1–2 clubes que realmente disfrutes">Join 1–2 clubs or activities you genuinely enjoy</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Start tracking volunteer hours (keep a simple log)" data-es="Empieza a registrar tus horas de voluntariado">Start tracking volunteer hours (keep a simple log)</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Build a relationship with at least one teacher/counselor" data-es="Construye relación con al menos un maestro o consejero">Build a relationship with at least one teacher/counselor</span></div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;">
+        <div style="background:#27AE60;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+          <span style="background:white;color:#27AE60;font-family:var(--font-display);font-weight:800;font-size:14px;padding:4px 12px;border-radius:20px;">10th Grade</span>
+          <span style="color:rgba(255,255,255,0.85);font-size:13px;" data-en="Explore and begin testing" data-es="Explora y empieza a prepararte para exámenes">Explore and begin testing</span>
+        </div>
+        <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Take PSAT 10 in spring — great practice for PSAT/NMSQT" data-es="Toma el PSAT 10 en primavera — práctica para el PSAT/NMSQT">Take PSAT 10 in spring — great SAT practice</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Apply to summer programs (USC YRP, Riordan, etc.)" data-es="Aplica a programas de verano (USC YRP, Riordan, etc.)">Apply to summer programs (USC YRP, Riordan, etc.)</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Start a list of colleges you're curious about" data-es="Empieza una lista de universidades que te interesan">Start a list of colleges you're curious about</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Aim for leadership roles in your activities by 11th grade" data-es="Aspira a roles de liderazgo en tus actividades para el grado 11">Aim for leadership roles in your activities by 11th</span></div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;">
+        <div style="background:#E67E22;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+          <span style="background:white;color:#E67E22;font-family:var(--font-display);font-weight:800;font-size:14px;padding:4px 12px;border-radius:20px;">11th Grade</span>
+          <span style="color:rgba(255,255,255,0.85);font-size:13px;" data-en="The most important year" data-es="El año más importante">The most important year</span>
+        </div>
+        <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Take SAT/ACT in fall AND spring — aim to improve each time" data-es="Toma SAT/ACT en otoño Y primavera — mejora cada vez">Take SAT/ACT in fall AND spring</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Take PSAT/NMSQT in October — National Merit opportunity" data-es="Toma el PSAT/NMSQT en octubre — oportunidad de National Merit">Take PSAT/NMSQT in October (National Merit!)</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Visit colleges (in-person or virtual) — start narrowing your list" data-es="Visita universidades — empieza a reducir tu lista">Visit colleges (virtual or in-person)</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Start drafting your Common App or UC personal insight essays over the summer" data-es="Empieza a redactar tus ensayos Common App o UC durante el verano">Draft essays over summer — don't wait till 12th!</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Ask 2 teachers for rec letters in April/May — before school ends" data-es="Pide cartas de recomendación a 2 maestros en abril/mayo">Ask for rec letters in April/May — before school ends</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Research scholarships — LAUSD, Gates, QuestBridge, local orgs" data-es="Investiga becas — LAUSD, Gates, QuestBridge, organizaciones locales">Research scholarships: Gates, QuestBridge, local orgs</span></div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;">
+        <div style="background:#CC0000;padding:12px 20px;display:flex;align-items:center;gap:12px;">
+          <span style="background:white;color:#CC0000;font-family:var(--font-display);font-weight:800;font-size:14px;padding:4px 12px;border-radius:20px;">12th Grade</span>
+          <span style="color:rgba(255,255,255,0.85);font-size:13px;" data-en="Execute your plan — apply!" data-es="Ejecuta tu plan — ¡aplica!">Execute your plan — apply!</span>
+        </div>
+        <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Finalize your college list (3–4 reach, 3–4 match, 2–3 safety)" data-es="Finaliza tu lista (3–4 de alcance, 3–4 realistas, 2–3 seguras)">Finalize your college list (reach / match / safety)</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Complete FAFSA as soon as it opens (Oct 1) — don't leave money on the table" data-es="Completa el FAFSA tan pronto abra (1 oct) — no dejes dinero sobre la mesa">Complete FAFSA Oct 1 — don't leave aid on the table</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Early Action/Decision deadlines: Nov 1–15" data-es="Fechas de Acción Temprana/Decisión: Nov 1–15">EA/ED deadlines: Nov 1–15</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Regular Decision & UC deadlines: Nov 30 – Jan 1" data-es="Decisión Regular y UC: Nov 30 – Ene 1">RD & UC deadlines: Nov 30 – Jan 1</span></div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;">✅ <span data-en="Keep your grades up — colleges can rescind offers!" data-es="¡Mantén tus notas! — las universidades pueden retirar ofertas">Keep grades up — colleges CAN rescind offers!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UC PIQs -->
+    <div class="section-header">
+      <h2 class="section-title">🏫 <span data-en="2026 UC Personal Insight Questions (PIQs)" data-es="2026 Preguntas de Perspectiva Personal UC (PIQs)">2026 UC Personal Insight Questions (PIQs)</span></h2>
+      <span class="section-badge" data-en="Pick 4 of 8" data-es="Elige 4 de 8">Pick 4 of 8</span>
+    </div>
+    <div style="background:var(--white);border-radius:16px;border:1.5px solid var(--border);padding:24px;margin-bottom:8px;">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;" data-en="The UC application requires 4 essays (350 words each) chosen from the 8 prompts below. These are the official 2026 prompts — the same prompts used every year. Choose prompts where you have a genuine, specific story to tell." data-es="La solicitud UC requiere 4 ensayos (350 palabras cada uno) elegidos de los 8 siguientes. Elige los que te den una historia genuina y específica para contar.">The UC application requires 4 essays (350 words each) from the 8 prompts below. Choose the ones where you have the most specific, authentic story.</p>
+      <div style="display:grid;gap:14px;">
+        <div style="border-left:4px solid #2774AE;padding:14px 16px;background:#EBF5FF;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#2774AE;margin-bottom:6px;">PIQ #1</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="Describe an example of your leadership experience in which you have positively influenced others, helped resolve disputes, or contributed to group efforts over time." data-es="Describe un ejemplo de tu experiencia de liderazgo en el que hayas influido positivamente en otros, ayudado a resolver disputas o contribuido a esfuerzos en grupo.">Describe an example of your leadership experience in which you have positively influenced others, helped resolve disputes, or contributed to group efforts over time.</div>
+          <div style="font-size:12px;color:#1a5276;" data-en="💡 Tip: Leadership doesn't have to mean a title. A student who organized their community during a crisis shows more leadership than one who was just club president." data-es="💡 Consejo: Liderazgo no requiere un título. Organizar tu comunidad demuestra más liderazgo que solo ser presidente de un club.">💡 Tip: Leadership doesn't require a title. Think about moments you took initiative or brought people together.</div>
+        </div>
+        <div style="border-left:4px solid #27AE60;padding:14px 16px;background:#EAFAF1;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#27AE60;margin-bottom:6px;">PIQ #2</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="Every person has a creative side, and it can be expressed in many ways: problem solving, original and innovative thinking, and artistically, to name a few. Describe how you express your creative side." data-es="Toda persona tiene un lado creativo que puede expresarse de muchas maneras. Describe cómo expresas tu lado creativo.">Every person has a creative side, and it can be expressed in many ways: problem solving, original and innovative thinking, and artistically, to name a few. Describe how you express your creative side.</div>
+          <div style="font-size:12px;color:#1e8449;" data-en="💡 Tip: Creativity includes engineering, cooking, fashion, coding, or finding a new solution to a community problem. Don't limit yourself to 'art.'" data-es="💡 Consejo: La creatividad incluye ingeniería, cocina, moda, programación. No te limites a 'arte'.">💡 Tip: Creativity includes engineering, cooking, fashion, coding, or solving a community problem.</div>
+        </div>
+        <div style="border-left:4px solid #8E44AD;padding:14px 16px;background:#F5EEF8;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8E44AD;margin-bottom:6px;">PIQ #3</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="What would you say is your greatest talent or skill? How have you developed and demonstrated that talent over time?" data-es="¿Cuál dirías que es tu mayor talento o habilidad? ¿Cómo lo has desarrollado y demostrado con el tiempo?">What would you say is your greatest talent or skill? How have you developed and demonstrated that talent over time?</div>
+          <div style="font-size:12px;color:#6c3483;" data-en="💡 Tip: Be specific. Not 'I'm good at math' but 'I discovered a pattern in sequences while teaching my younger sibling and it changed how I see numbers.'" data-es="💡 Consejo: Sé específico. No 'soy bueno en matemáticas' sino describe un momento exacto que demuestre tu habilidad.">💡 Tip: Be specific — describe a concrete moment that reveals your talent, not just what it is.</div>
+        </div>
+        <div style="border-left:4px solid #E67E22;padding:14px 16px;background:#FEF9E7;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#E67E22;margin-bottom:6px;">PIQ #4</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="Describe how you have taken advantage of a significant educational opportunity or worked to overcome an educational barrier you have faced." data-es="Describe cómo has aprovechado una oportunidad educativa significativa o cómo has superado una barrera educativa.">Describe how you have taken advantage of a significant educational opportunity or worked to overcome an educational barrier you have faced.</div>
+          <div style="font-size:12px;color:#ca6f1e;" data-en="💡 Tip: This is a great place to talk about internships, programs like YRP, or challenges like learning English, family responsibilities, or school changes." data-es="💡 Consejo: Perfecto para hablar de pasantías, programas como YRP, o desafíos como aprender inglés o responsabilidades familiares.">💡 Tip: Great place to mention programs from this site — USC YRP, Riordan, etc. — or overcome challenges.</div>
+        </div>
+        <div style="border-left:4px solid #CC0000;padding:14px 16px;background:#FEF2F2;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#CC0000;margin-bottom:6px;">PIQ #5</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="Describe the most significant challenge you have faced and the steps you have taken to overcome this challenge. How has this challenge affected your academic achievement?" data-es="Describe el desafío más significativo que has enfrentado y los pasos que tomaste para superarlo. ¿Cómo afectó tu rendimiento académico?">Describe the most significant challenge you have faced and the steps you have taken to overcome this challenge. How has this challenge affected your academic achievement?</div>
+          <div style="font-size:12px;color:#922b21;" data-en="💡 Tip: Be honest and specific. Admissions officers read thousands of essays — authenticity and growth matter far more than having a 'perfect' story." data-es="💡 Consejo: Sé honesto y específico. La autenticidad y el crecimiento importan más que tener una historia 'perfecta'.">💡 Tip: Authenticity matters more than a "perfect" story. Show how you grew from the challenge.</div>
+        </div>
+        <div style="border-left:4px solid #1ABC9C;padding:14px 16px;background:#E8FAF7;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0e7a67;margin-bottom:6px;">PIQ #6</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="Think about an academic subject that inspires you. Describe how you have furthered this interest inside and/or outside of the classroom." data-es="Piensa en una materia académica que te inspire. Describe cómo has profundizado este interés dentro y/o fuera del aula.">Think about an academic subject that inspires you. Describe how you have furthered this interest inside and/or outside of the classroom.</div>
+          <div style-font-size:12px;color:#0e7a67;" data-en="💡 Tip: Connect your passion to real-world impact. Reading extra books is fine, but connecting it to a research project, community issue, or career aspiration is more compelling." data-es="💡 Consejo: Conecta tu pasión a un impacto real — un proyecto de investigación, un problema comunitario o una aspiración de carrera.">💡 Tip: Connect your academic interest to real action you've taken — research, a project, community work.</div>
+        </div>
+        <div style="border-left:4px solid #F39C12;padding:14px 16px;background:#FEF9E7;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#d68910;margin-bottom:6px;">PIQ #7</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="What have you done to make your school or your community a better place?" data-es="¿Qué has hecho para mejorar tu escuela o comunidad?">What have you done to make your school or your community a better place?</div>
+          <div style="font-size:12px;color:#b7770d;" data-en="💡 Tip: Volunteer hours from this site's programs — UCLA Health, LAPL, Cedars-Sinai — are perfect material for this prompt. Quantify your impact with numbers." data-es="💡 Consejo: Tus horas de voluntariado de UCLA Health, LAPL o Cedars-Sinai son material perfecto. Cuantifica tu impacto con números.">💡 Tip: Volunteer work from this site's programs (UCLA Health, LAPL, Cedars-Sinai) is perfect here. Use numbers!</div>
+        </div>
+        <div style="border-left:4px solid #6B7A99;padding:14px 16px;background:#F8F9FC;border-radius:0 10px 10px 0;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B7A99;margin-bottom:6px;">PIQ #8</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-en="Beyond what has already been shared in your application, what do you want us to know about you?" data-es="Más allá de lo que ya has compartido en tu solicitud, ¿qué quieres que sepamos sobre ti?">Beyond what has already been shared in your application, what do you want us to know about you?</div>
+          <div style="font-size:12px;color:#4a5568;" data-en="💡 Tip: This is the wildcard — use it to fill a gap in your application. Didn't have space to mention your bilingualism, family responsibilities, or a unique experience? Put it here." data-es="💡 Consejo: Usa este para llenar un vacío en tu solicitud: bilingüismo, responsabilidades familiares, o una experiencia única que no cabe en otro lugar.">💡 Tip: Use this to fill a gap — bilingüismo, family responsibilities, or something unique not mentioned elsewhere.</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--navy);color:white;border-radius:12px;padding:14px 20px;margin-bottom:32px;font-size:13px;line-height:1.6;">
+      <strong style="color:var(--gold);" data-en="UC PIQ Strategy:" data-es="Estrategia UC PIQ:">UC PIQ Strategy:</strong>
+      <span data-en=" Choose 4 prompts that each highlight a DIFFERENT side of you. Don't repeat themes. Avoid PIQ #8 unless you have something truly unaddressed. Keep sentences short — 350 words goes fast. Write in your own natural voice." data-es=" Elige 4 que resalten aspectos DIFERENTES de ti. No repitas temas. Evita el #8 a menos que tengas algo verdaderamente sin abordar. Las oraciones cortas ayudan — 350 palabras pasan rápido."> Choose 4 that each highlight a DIFFERENT side of you. Don't repeat themes. Avoid #8 unless truly necessary. Short sentences — 350 words goes fast. Write in your own natural voice.</span>
+    </div>
+
+    <!-- COMMON APP -->
+    <div class="section-header">
+      <h2 class="section-title">📝 <span data-en="Common App Personal Statement (2026)" data-es="Ensayo Personal Common App (2026)">Common App Personal Statement (2026)</span></h2>
+      <span class="section-badge" data-en="650 Words Max" data-es="Máx. 650 Palabras">650 Words Max</span>
+    </div>
+    <div style="background:var(--white);border-radius:16px;border:1.5px solid var(--border);padding:24px;margin-bottom:8px;">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;" data-en="The Common App personal statement (650 words max) is sent to ALL Common App schools. It's your biggest essay — choose one of the 7 prompts below or use Prompt 7 (your choice of topic). This essay goes to schools like USC, LMU, Loyola, and most private universities." data-es="El ensayo personal de Common App (máx. 650 palabras) se envía a TODAS las escuelas de Common App. Es tu ensayo más importante — elige uno de los 7 prompts o usa el Prompt 7 (tu elección).">The Common App personal statement (650 words max) goes to ALL Common App schools — USC, LMU, most privates. Choose your strongest prompt.</p>
+      <div style="display:grid;gap:14px;">
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 1</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="Background & Identity" data-es="Antecedentes e Identidad">Background & Identity</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="Some students have a background, identity, interest, or talent that is so meaningful they believe their application would be incomplete without it. If this sounds like you, then please share your story." data-es="Algunos estudiantes tienen un antecedente, identidad, interés o talento tan significativo que sienten que su solicitud estaría incompleta sin él. Si esto te describe, comparte tu historia.">Some students have a background, identity, interest, or talent that is so meaningful they believe their application would be incomplete without it. If this sounds like you, then please share your story.</div>
+          <div style="font-size:12px;color:#1a5276;background:#EBF5FF;padding:10px;border-radius:8px;" data-en="💡 Popular choice for first-gen, immigrant, bilingual students. Your story of navigating two cultures, languages, or worlds is incredibly powerful here." data-es="💡 Opción popular para estudiantes de primera generación, inmigrantes o bilingües. Tu historia navegando entre dos culturas o idiomas es muy poderosa aquí.">💡 Great for first-gen, immigrant, or bilingual students. Navigating two cultures is a compelling story.</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 2</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="Overcoming Obstacles" data-es="Superando Obstáculos">Overcoming Obstacles</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="The lessons we take from obstacles we encounter can be fundamental to later success. Recount a time when you faced a challenge, setback, or failure. How did it affect you, and what did you learn?" data-es="Las lecciones de los obstáculos pueden ser fundamentales para el éxito futuro. Relata un momento en que enfrentaste un desafío, revés o fracaso. ¿Cómo te afectó y qué aprendiste?">The lessons we take from obstacles we encounter can be fundamental to later success. Recount a time when you faced a challenge, setback, or failure. How did it affect you, and what did you learn?</div>
+          <div style="font-size:12px;color:#1e8449;background:#EAFAF1;padding:10px;border-radius:8px;" data-en="💡 The key is growth — not how bad the obstacle was, but what YOU did with it. Avoid making it sound like a victim story. Show resilience and transformation." data-es="💡 La clave es el crecimiento — no qué tan difícil fue, sino qué HICISTE con ello. Evita que suene como una historia de víctima. Muestra resiliencia.">💡 Focus on growth and transformation, not just how hard things were. Show what you did with the experience.</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 3</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="Challenging a Belief" data-es="Cuestionando una Creencia">Challenging a Belief</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="Reflect on a time when you questioned or challenged a belief or idea. What prompted your thinking? What was the outcome?" data-es="Reflexiona sobre un momento en que cuestionaste una creencia o idea. ¿Qué provocó tu pensamiento? ¿Cuál fue el resultado?">Reflect on a time when you questioned or challenged a belief or idea. What prompted your thinking? What was the outcome?</div>
+          <div style="font-size:12px;color:#6c3483;background:#F5EEF8;padding:10px;border-radius:8px;" data-en="💡 Shows intellectual maturity. Write about a belief you once held that changed through experience — whether in class, at an internship, or in your community." data-es="💡 Muestra madurez intelectual. Escribe sobre una creencia que cambió a través de una experiencia — en clase, en una pasantía o en tu comunidad.">💡 Shows intellectual maturity. Great if you changed your mind about something through a real experience.</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 4</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="Problem Solving" data-es="Resolución de Problemas">Problem Solving</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="Reflect on something that someone has done for you that has made you happy or thankful in a surprising way. How has this gratitude affected or motivated you?" data-es="Reflexiona sobre algo que alguien haya hecho por ti que te haya hecho feliz o agradecido de manera sorprendente. ¿Cómo te ha afectado o motivado esta gratitud?">Reflect on something that someone has done for you that has made you happy or thankful in a surprising way. How has this gratitude affected or motivated you?</div>
+          <div style="font-size:12px;color:#ca6f1e;background:#FEF9E7;padding:10px;border-radius:8px;" data-en="💡 Underused prompt — if you have a genuine story of someone who changed your trajectory (a mentor, teacher, family member), this can be incredibly moving." data-es="💡 Prompt poco usado — si tienes una historia genuina de alguien que cambió tu camino (mentor, maestro, familiar), puede ser muy conmovedor.">💡 Underused — a genuine mentor or family story here can be incredibly moving and memorable.</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 5</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="Personal Growth" data-es="Crecimiento Personal">Personal Growth</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="Discuss an accomplishment, event, or realization that sparked a period of personal growth and a new understanding of yourself or others." data-es="Habla de un logro, evento o revelación que desencadenó un período de crecimiento personal y una nueva comprensión de ti mismo o de los demás.">Discuss an accomplishment, event, or realization that sparked a period of personal growth and a new understanding of yourself or others.</div>
+          <div style="font-size:12px;color:#922b21;background:#FEF2F2;padding:10px;border-radius:8px;" data-en="💡 One of the most popular prompts. The key: make the growth feel earned through a specific story, not abstract claims like 'I became a better person.'" data-es="💡 Uno de los prompts más populares. Clave: que el crecimiento se sienta ganado mediante una historia específica, no afirmaciones abstractas.">💡 Very popular prompt. Make the growth feel earned through a specific story, not abstract claims.</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 6</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="What Captivates You" data-es="Lo Que Te Apasiona">What Captivates You</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="Describe a topic, idea, or concept you find so engaging that it makes you lose all track of time. Why does it captivate you? What or who do you turn to when you want to learn more?" data-es="Describe un tema, idea o concepto que te absorba tanto que pierdas la noción del tiempo. ¿Por qué te apasiona? ¿A quién o qué acudes para aprender más?">Describe a topic, idea, or concept you find so engaging that it makes you lose all track of time. Why does it captivate you? What or who do you turn to when you want to learn more?</div>
+          <div style="font-size:12px;color:#0e7a67;background:#E8FAF7;padding:10px;border-radius:8px;" data-en="💡 Show genuine intellectual curiosity. Avoid clichés like 'ever since I was little, I loved science.' Start with the specific moment you fell in love with the subject." data-es="💡 Muestra curiosidad intelectual genuina. Evita clichés. Empieza con el momento específico en que te enamoraste del tema.">💡 Avoid clichés — start with the specific moment you fell in love with the topic, not a generic origin story.</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:16px;border-color:#F5A623;background:linear-gradient(135deg,#FFF9EE,white);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="background:var(--gold);color:var(--navy);font-weight:800;font-size:12px;padding:4px 10px;border-radius:20px;font-family:var(--font-display);">Prompt 7 ⭐</span>
+            <span style="font-size:12px;color:var(--text-muted);" data-en="Your Own Topic (Most Freedom!)" data-es="Tu Propio Tema (¡Más libertad!)">Your Own Topic (Most Freedom!)</span>
+          </div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:6px;" data-en="Share an essay on any topic of your choice. It can be one you've already written, one that responds to a different prompt, or one of your own design." data-es="Comparte un ensayo sobre cualquier tema de tu elección. Puede ser uno que ya hayas escrito, uno que responda a otro prompt, o uno de tu propio diseño.">Share an essay on any topic of your choice. It can be one you've already written, one that responds to a different prompt, or one of your own design.</div>
+          <div style="font-size:12px;color:#7d5a00;background:#FFF3DC;padding:10px;border-radius:8px;" data-en="💡 This is the BEST prompt for students with a truly unique story — a family tradition, an unusual job or responsibility, a hobby that defines you. If none of Prompts 1–6 fit naturally, use this one." data-es="💡 Este es el MEJOR prompt para estudiantes con una historia verdaderamente única — una tradición familiar, un trabajo inusual, un pasatiempo que te define. Si ningún prompt anterior se ajusta naturalmente, usa este.">💡 Best for students with a truly unique story. If none of Prompts 1–6 feel natural — use this one.</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--navy);color:white;border-radius:12px;padding:14px 20px;margin-bottom:32px;font-size:13px;line-height:1.6;">
+      <strong style="color:var(--gold);" data-en="Common App Essay Strategy:" data-es="Estrategia de Ensayo Common App:">Common App Essay Strategy:</strong>
+      <span data-en=" Start with a specific scene or moment — don't open with a quote or generic statement. The admissions officer should be able to picture exactly where you are in sentence one. Use the essay to reveal something NOT shown elsewhere in your application. Read it aloud — if it doesn't sound like you, rewrite it." data-es=" Empieza con una escena o momento específico — no abras con una cita o declaración genérica. El oficial de admisiones debe poder imaginarse exactamente dónde estás en la primera oración. Usa el ensayo para revelar algo que NO se muestre en otra parte de tu solicitud."> Start with a specific scene — not a quote or generic statement. The officer should picture where you are in sentence one. Reveal something NOT shown elsewhere. Read it aloud — if it doesn't sound like you, rewrite it.</span>
+    </div>
+
+    <!-- KEY DATES -->
+    <div class="section-header">
+      <h2 class="section-title">📆 <span data-en="Key Application Dates (Class of 2026)" data-es="Fechas Clave de Solicitud (Clase del 2026)">Key Application Dates (Class of 2026)</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px;">
+      <div style="background:var(--white);border-radius:12px;border:1.5px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:600;margin-bottom:6px;">FAFSA Opens</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:#27AE60;">Oct 1</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" data-en="Apply ASAP for max aid" data-es="Aplica ASAP para máximo apoyo">Apply ASAP for max aid</div>
+      </div>
+      <div style="background:var(--white);border-radius:12px;border:1.5px solid #FEE2E2;padding:16px;text-align:center;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#CC0000;font-weight:600;margin-bottom:6px;">EA / ED Deadline</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:#CC0000;">Nov 1</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" data-en="Early Action / Early Decision" data-es="Acción Temprana / Decisión Temprana">Early Action / Early Decision</div>
+      </div>
+      <div style="background:var(--white);border-radius:12px;border:1.5px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:600;margin-bottom:6px;">UC Application</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:#2774AE;">Nov 30</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" data-en="UC system deadline (all campuses)" data-es="Fecha límite del sistema UC">UC system — all campuses</div>
+      </div>
+      <div style="background:var(--white);border-radius:12px;border:1.5px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:600;margin-bottom:6px;">Regular Decision</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--navy);">Jan 1</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" data-en="Most RD deadlines — check each school" data-es="La mayoría de fechas RD — verifica cada escuela">Most RD deadlines — check each school</div>
+      </div>
+      <div style="background:var(--white);border-radius:12px;border:1.5px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:600;margin-bottom:6px;">CSS Profile</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:#8E44AD;">Oct–Feb</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" data-en="Required by many private colleges for aid" data-es="Requerido por muchas universidades privadas">Required by many private colleges for aid</div>
+      </div>
+      <div style="background:var(--white);border-radius:12px;border:1.5px solid var(--border);padding:16px;text-align:center;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:600;margin-bottom:6px;">Commit / Deposit</div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--gold-dark);">May 1</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" data-en="National Decision Day — commit to your school!" data-es="Día Nacional de Decisión — ¡comprométete con tu escuela!">National Decision Day</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div id="tab-resources" class="tab-content">
+    <div class="section-header">
+      <h2 class="section-title">🔗 <span data-en="Helpful Resources" data-es="Recursos Útiles">Helpful Resources</span></h2>
+    </div>
+    <div class="about-grid">
+      <div class="resource-card"><div class="resource-icon">📝</div><div class="resource-title" data-en="LAUSD College & Career" data-es="LAUSD Carreras">LAUSD College & Career</div><div class="resource-text" data-en="Free counseling, internship referrals, and career exploration for all LAUSD students." data-es="Orientación gratuita y referencias de pasantías para estudiantes de LAUSD.">Free counseling, internship referrals, and career exploration.</div></div>
+      <div class="resource-card"><div class="resource-icon">💻</div><div class="resource-title">LinkedIn & Indeed</div><div class="resource-text" data-en="Create a student LinkedIn profile early. Many programs check your online presence." data-es="Crea un perfil de LinkedIn estudiantil. Muchos programas revisan tu presencia en línea.">Create a student LinkedIn early — many programs check it.</div></div>
+      <div class="resource-card"><div class="resource-icon">✉️</div><div class="resource-title" data-en="Personal Statement Help" data-es="Ayuda con tu Ensayo">Personal Statement Help</div><div class="resource-text" data-en="Khan Academy, CollegeVine, and your school counselor offer free essay review." data-es="Khan Academy, CollegeVine y tu consejero ofrecen revisión gratuita de ensayos.">Khan Academy, CollegeVine, and counselors offer free essay review.</div></div>
+      <div class="resource-card"><div class="resource-icon">🗣️</div><div class="resource-title" data-en="Interview Prep" data-es="Preparación para Entrevista">Interview Prep</div><div class="resource-text" data-en="Practice with Big Interview (free for students) or mock interviews at your school." data-es="Practica con Big Interview (gratis para estudiantes) o entrevistas simuladas.">Big Interview (free), mock interviews, or record yourself on your phone.</div></div>
+      <div class="resource-card"><div class="resource-icon">🌐</div><div class="resource-title" data-en="LA City Youth Programs" data-es="Programas Juveniles de LA">LA City Youth Programs</div><div class="resource-text" data-en="Mayor's office youth internships, LA Parks programs, and WorkSource youth employment." data-es="Pasantías del alcalde, programas de parques de LA y empleo juvenil WorkSource.">Mayor's internships, LA Parks programs, and WorkSource youth employment.</div></div>
+      <div class="resource-card"><div class="resource-icon">💡</div><div class="resource-title" data-en="Letters of Recommendation" data-es="Cartas de Recomendación">Letters of Recommendation</div><div class="resource-text" data-en="Ask teachers 6–8 weeks in advance. Provide a brag sheet with your accomplishments." data-es="Pide cartas con 6-8 semanas de anticipación. Da una 'hoja de logros' a tus maestros.">Ask teachers 6–8 weeks early. Give them a brag sheet of your accomplishments.</div></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── DEADLINE LOGIC ───────────────────────────────────────────────────────────
+// Deadlines with ISO date strings. The urgency is computed automatically
+// from today's date every time the page loads — no manual updates needed.
+const DEADLINES = [
+  { prog: 'YMCA CIT Summer Camp Program', detail: { en: 'Apply for Counselor-in-Training summer program', es: 'Aplica para el programa CIT de campamento de verano' }, month: 'MAY', day: '01', iso: '2025-05-01', url: 'https://www.ymcala.org/camps' },
+  { prog: 'CHLA Junior Volunteer (Summer)', detail: { en: 'Apply for summer slots — very competitive', es: 'Aplica para turnos de verano — muy competitivo' }, month: 'APR', day: '01', iso: '2025-04-01', url: 'https://www.chla.org/volunteer-services' },
+  { prog: 'USC YRP', detail: { en: 'Application + transcript + rec letter due', es: 'Solicitud + transcripción + carta de recomendación' }, month: 'MAY', day: '15', iso: '2025-05-15', url: 'https://dornsife.usc.edu/research/undergrad/yrp/' },
+  { prog: 'LACDPH Summer Youth Internship', detail: { en: 'Apply online through laworks.net', es: 'Aplica en línea en laworks.net' }, month: 'MAY', day: '31', iso: '2025-05-31', url: 'https://www.laworks.net/YouthServices/YS_SYEP.asp' },
+  { prog: 'UCLA Riordan Programs', detail: { en: 'Online application + essay required', es: 'Solicitud en línea + ensayo requerido' }, month: 'JUN', day: '01', iso: '2025-06-01', url: 'https://www.anderson.ucla.edu/about/centers-and-institutes/riordan-programs' },
+  { prog: 'LA BioMed / Harbor-UCLA Research', detail: { en: 'Personal statement + recommendation letter', es: 'Declaración personal + carta de recomendación' }, month: 'JUN', day: '15', iso: '2025-06-15', url: 'https://lundquist.org/education-training/' },
+  { prog: 'Bresee Foundation YLP', detail: { en: 'Application + interview required', es: 'Solicitud + entrevista requerida' }, month: 'JUN', day: '15', iso: '2025-06-15', url: 'https://www.bresee.org/youth-programs' },
+  { prog: 'USC Bovard Scholars Program', detail: { en: 'Full application + 2 rec letters required', es: 'Solicitud completa + 2 cartas de recomendación' }, month: 'JUL', day: '01', iso: '2025-07-01', url: 'https://bovard.usc.edu/scholars/' },
+  { prog: 'GFL Internship Program', detail: { en: 'Rolling — new cohorts open periodically', es: 'Continuo — nuevas cohortes se abren periódicamente' }, month: 'ALL', day: '—', iso: null, url: 'https://www.generationforleadership.org/' },
+  { prog: 'UCLA Health Teen Volunteer', detail: { en: 'Rolling — apply anytime, year-round', es: 'Continuo — aplica en cualquier momento' }, month: 'ALL', day: '—', iso: null, url: 'https://www.uclahealth.org/giving-back/volunteer' },
+  { prog: 'Cedars-Sinai Youth Volunteer', detail: { en: 'Rolling — summer spots fill fast, apply early!', es: 'Continuo — los espacios de verano se llenan rápido' }, month: 'ALL', day: '—', iso: null, url: 'https://www.cedars-sinai.org/patients-visitors/volunteering.html' },
+  { prog: 'LAPL Teen Volunteer Program', detail: { en: 'Rolling — contact your local branch', es: 'Continuo — contacta tu sucursal local' }, month: 'ALL', day: '—', iso: null, url: 'https://www.lapl.org/teens' },
+];
+
+function getUrgency(isoDate) {
+  if (!isoDate) return 'upcoming';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const deadline = new Date(isoDate);
+  const diffDays = Math.ceil((deadline - today) / 86400000);
+  if (diffDays < 0) return 'expired';
+  if (diffDays <= 14) return 'critical';
+  if (diffDays <= 30) return 'soon';
+  return 'upcoming';
+}
+
+// ─── PROGRAM DATA ─────────────────────────────────────────────────────────────
+const PROGRAMS = [
+  { id:1, type:'paid', season:'summer', featured:true, org:'University of Southern California', title:{en:'USC Youth Research Program (YRP)',es:'Programa de Investigación Juvenil USC (YRP)'}, desc:{en:'Paid summer research experience at USC labs. Students work alongside faculty and grad students on real research projects.',es:'Experiencia pagada de investigación en laboratorios de USC junto a profesores y estudiantes graduados.'}, tags:['paid','summer'], deadline:'May 15, 2025', deadlineIso:'2025-05-15', pay:'$15/hr', grades:'10–12', location:'USC Campus, Los Angeles', url:'https://dornsife.usc.edu/research/undergrad/yrp/', requirements:{en:['GPA 3.0+','Grade 10–12','LAUSD preferred','Interest in science/research'],es:['GPA 3.0+','Grado 10–12','Preferencia LAUSD','Interés en ciencia/investigación']}, color:'#CC0000' },
+  { id:2, type:'unpaid', season:'summer', featured:true, org:'UCLA Anderson School of Management', title:{en:'UCLA Riordan Programs',es:'Programas Riordan UCLA'}, desc:{en:'Elite leadership and college prep for underrepresented high school students. Includes mentorship, college tours, and business skills.',es:'Liderazgo y preparación universitaria para estudiantes subrepresentados. Incluye tutoría y habilidades de negocios.'}, tags:['unpaid','summer'], deadline:'Jun 1, 2025', deadlineIso:'2025-06-01', pay:'Free + Stipend', grades:'9–12', location:'UCLA Campus, Westwood', url:'https://www.anderson.ucla.edu/about/centers-and-institutes/riordan-programs', requirements:{en:['First-gen student preferred','Grade 9–12','Essay required','Recommendation letter'],es:['Preferencia primera generación','Grado 9–12','Ensayo requerido','Carta de recomendación']}, color:'#2774AE' },
+  { id:3, type:'unpaid', season:'summer', featured:true, org:'USC Bovard College', title:{en:'USC Bovard Scholars Program',es:'Programa de Becarios Bovard USC'}, desc:{en:'Intensive college prep summer program for high-achieving students from underserved communities. Focus on leadership, academics, and community.',es:'Programa intensivo de preparación universitaria para estudiantes sobresalientes de comunidades desatendidas.'}, tags:['unpaid','summer'], deadline:'Jul 1, 2025', deadlineIso:'2025-07-01', pay:'Free (Full scholarship)', grades:'10–11', location:'USC Campus', url:'https://bovard.usc.edu/scholars/', requirements:{en:['GPA 3.5+','Grade 10–11','Financial need considered','2 recommendation letters'],es:['GPA 3.5+','Grado 10–11','Necesidad financiera considerada','2 cartas de recomendación']}, color:'#CC0000' },
+  { id:4, type:'paid', season:'yearround', featured:false, org:'Bresee Foundation', title:{en:'Bresee Foundation Youth Leadership Program (YLP)',es:'Programa de Liderazgo Juvenil Bresee (YLP)'}, desc:{en:'Year-round paid leadership and employment program for Koreatown/LA teens. Develop job skills, community engagement, and professional experience.',es:'Programa anual pagado de liderazgo para jóvenes de Koreatown/LA. Desarrolla habilidades laborales y experiencia profesional.'}, tags:['paid','yearround'], deadline:'Rolling', deadlineIso:null, pay:'$17.28/hr', grades:'9–12 (14–18)', location:'Koreatown, Los Angeles', url:'https://www.bresee.org/youth-programs', requirements:{en:['Ages 14–18','LA resident','Koreatown/Westlake preferred','Application + Interview'],es:['14–18 años','Residente de LA','Área Koreatown/Westlake preferido','Solicitud + Entrevista']}, color:'#E67E22' },
+  { id:5, type:'paid', season:'yearround', featured:false, org:'Generation For Leadership (GFL)', title:{en:'GFL Internship Program',es:'Programa de Pasantías GFL'}, desc:{en:'Connects LA high schoolers to paid internships in business, media, law, and nonprofits. Includes mentorship and professional development.',es:'Conecta estudiantes de LA con pasantías pagadas en negocios, medios, leyes y ONGs. Incluye tutoría y desarrollo profesional.'}, tags:['paid','yearround'], deadline:'Rolling', deadlineIso:null, pay:'$16–18/hr', grades:'10–12', location:'Various LA locations', url:'https://www.generationforleadership.org/', requirements:{en:['Grade 10–12','GPA 2.8+','Essay required','Interview'],es:['Grado 10–12','GPA 2.8+','Ensayo requerido','Entrevista']}, color:'#27AE60' },
+  { id:6, type:'paid', season:'summer', featured:false, org:'LA County Dept. of Public Health', title:{en:'LACDPH Summer Youth Internship',es:'Pasantía de Verano LACDPH'}, desc:{en:'Paid summer internship in public health, community outreach, and data. Gain exposure to healthcare careers.',es:'Pasantía de verano pagada en salud pública y comunidad. Exposición a carreras en el área de la salud.'}, tags:['paid','summer'], deadline:'May 31, 2025', deadlineIso:'2025-05-31', pay:'$16.90/hr', grades:'9–12 (14–21)', location:'Various LA County sites', url:'https://www.laworks.net/YouthServices/YS_SYEP.asp', requirements:{en:['LA County resident','Ages 14–21','Apply at laworks.net','No experience needed'],es:['Residente del condado de LA','14–21 años','Aplica en laworks.net','Sin experiencia necesaria']}, color:'#2980B9' },
+  { id:7, type:'unpaid', season:'summer', featured:false, org:'Lundquist Institute / Harbor-UCLA', title:{en:'Harbor-UCLA Student Research Program',es:'Programa de Investigación Estudiantil Harbor-UCLA'}, desc:{en:'College-credit eligible research experience at Harbor-UCLA Medical Center. Shadow scientists and contribute to real medical research.',es:'Experiencia de investigación en Harbor-UCLA. Sombrea a científicos y contribuye a investigación médica real.'}, tags:['unpaid','summer'], deadline:'Jun 15, 2025', deadlineIso:'2025-06-15', pay:'Unpaid (college credit)', grades:'10–12', location:'Torrance, CA', url:'https://lundquist.org/education-training/', requirements:{en:['GPA 3.0+','Interest in biomedical research','Recommendation letter','Personal statement'],es:['GPA 3.0+','Interés en investigación biomédica','Carta de recomendación','Declaración personal']}, color:'#8E44AD' },
+  // VOLUNTEER
+  { id:8, type:'volunteer', season:'yearround', featured:false, org:'UCLA Health', title:{en:'UCLA Health Teen Volunteer Program',es:'Programa de Voluntariado Juvenil UCLA Health'}, desc:{en:'Volunteer at UCLA hospitals and clinics. Assist patients, families, and staff. Excellent for pre-med and healthcare career interest.',es:'Voluntariado en hospitales y clínicas de UCLA. Asiste a pacientes, familias y personal médico.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (14+)', location:'Westwood, Santa Monica', url:'https://www.uclahealth.org/giving-back/volunteer', requirements:{en:['Age 14+','TB test required','Background check (parents)','Orientation session','Min. 4 hrs/week'],es:['14 años o más','Prueba de tuberculosis','Verificación de antecedentes','Sesión de orientación','Mín. 4 hrs/semana']}, color:'#2774AE' },
+  { id:9, type:'volunteer', season:'yearround', featured:false, org:'Cedars-Sinai Medical Center', title:{en:'Cedars-Sinai Youth Volunteer Program',es:'Programa de Voluntariado Juvenil Cedars-Sinai'}, desc:{en:"Volunteer at one of LA's top hospitals. Work in pediatrics, front desk, or patient navigation. Great for health-focused students.",es:'Voluntariado en uno de los mejores hospitales de LA. Trabaja en pediatría, recepción o navegación de pacientes.'}, tags:['volunteer','yearround'], deadline:'Rolling (Apply Early)', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (15+)', location:'Beverly Hills / West Hollywood', url:'https://www.cedars-sinai.org/patients-visitors/volunteering.html', requirements:{en:['Age 15+','Application + Interview','Health screening','Min. 100 hrs commitment','Summer slots limited — apply early!'],es:['15 años o más','Solicitud + Entrevista','Examen de salud','Compromiso mínimo de 100 horas','¡Los cupos de verano son limitados!']}, color:'#1ABC9C' },
+  { id:10, type:'volunteer', season:'yearround', featured:false, org:'Los Angeles Public Library', title:{en:'LAPL Teen Volunteer Program',es:'Programa de Voluntariado Juvenil LAPL'}, desc:{en:'Volunteer at your local LA Public Library branch. Help with literacy events, tutoring kids, and community outreach. Great for service hours.',es:'Voluntariado en tu biblioteca pública local. Ayuda con eventos de alfabetización, tutoría de niños y alcance comunitario.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (13+)', location:'72+ branches across LA', url:'https://www.lapl.org/teens', requirements:{en:['Age 13+','Flexible schedule','No experience needed','Contact your local branch'],es:['13 años o más','Horario flexible','Sin experiencia previa','Contacta tu sucursal local']}, color:'#F39C12' },
+  { id:11, type:'volunteer', season:'summer', featured:false, org:"Children's Hospital Los Angeles", title:{en:'CHLA Junior Volunteer Program',es:'Programa de Voluntariado Juvenil CHLA'}, desc:{en:"Volunteer at Children's Hospital LA supporting patient families, recreation, and events. Highly competitive — apply early. Strong pre-med credential.",es:'Voluntariado en el Hospital Infantil de LA apoyando a familias de pacientes. Muy competitivo — aplica temprano.'}, tags:['volunteer','summer'], deadline:'Mar–Apr (for Summer)', deadlineIso:'2025-04-01', pay:'Volunteer', grades:'10–12 (15+)', location:'East Hollywood, LA', url:'https://www.chla.org/volunteer-services', requirements:{en:['Age 15+','Application + Interview','GPA 2.5+','Immunization records','Very competitive — apply early!'],es:['15 años o más','Solicitud + Entrevista','GPA 2.5+','Registros de vacunación','¡Muy competitivo, aplica temprano!']}, color:'#E74C3C' },
+  { id:12, type:'volunteer', season:'yearround', featured:false, org:'826LA', title:{en:'826LA Writing Tutor / Student Helper',es:'Tutor de Escritura / Ayudante 826LA'}, desc:{en:'Help younger students with creative writing and homework at Echo Park. Perfect for students who love English or want to become educators.',es:'Ayuda a estudiantes más jóvenes con escritura creativa en Echo Park. Perfecto para quienes aman el inglés o quieren ser educadores.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer', grades:'9–12', location:'Echo Park, Los Angeles', url:'https://826la.org/get-involved/volunteer/', requirements:{en:['Passion for writing/tutoring','Consistent availability','Application form','No prior experience needed'],es:['Pasión por escribir/tutorear','Disponibilidad consistente','Formulario de solicitud','Sin experiencia previa']}, color:'#9B59B6' },
+  { id:13, type:'volunteer', season:'yearround', featured:false, org:'Santa Monica Public Library', title:{en:'Santa Monica Library Teen Volunteer',es:'Voluntariado Juvenil Biblioteca Santa Mónica'}, desc:{en:'Help at Santa Monica Public Library with children\'s programs, shelving, literacy events, and community outreach. Build communication and organizational skills valued by colleges.',es:'Ayuda en la Biblioteca Pública de Santa Mónica con programas infantiles, eventos de alfabetización y alcance comunitario.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (13+)', location:'Santa Monica, CA', url:'https://www.smpl.org/Volunteer.aspx', requirements:{en:['Age 13+','Complete online application','Flexible weekend/afterschool hours','Orientation required','Contact Teen Services librarian'],es:['13 años o más','Solicitud en línea','Horario flexible fines de semana/después de escuela','Orientación requerida','Contacta al bibliotecario de servicios juveniles']}, color:'#0077B6' },
+  { id:14, type:'volunteer', season:'yearround', featured:false, org:'Pasadena Public Library', title:{en:'Pasadena Library Teen Advisory Board',es:'Junta Juvenil Asesora Biblioteca de Pasadena'}, desc:{en:'Join the Teen Advisory Board or volunteer at Pasadena Public Library. Help plan teen programs, assist at events, and earn community service hours. Great leadership opportunity.',es:'Únete a la Junta Asesora Juvenil o voluntariadoen la Biblioteca de Pasadena. Ayuda a planificar programas para jóvenes y gana horas de servicio comunitario.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (13+)', location:'Pasadena, CA', url:'https://www.cityofpasadena.net/library/teens/', requirements:{en:['Age 13–18','Application form required','1 hr/week minimum commitment','Attend monthly TAB meetings','All library branches accept volunteers'],es:['13–18 años','Formulario de solicitud requerido','Compromiso mínimo de 1 hr/semana','Asistir a reuniones mensuales del TAB']}, color:'#0077B6' },
+  { id:15, type:'volunteer', season:'yearround', featured:false, org:'Los Angeles County Animal Care Foundation', title:{en:'LA Animal Shelter Teen Volunteer',es:'Voluntariado Juvenil en Refugio Animal de LA'}, desc:{en:'Volunteer at LA County animal shelters caring for dogs, cats, and small animals. Tasks include dog walking, socialization, kennel cleaning, and adoption events. Perfect for animal lovers who want vet or biology experience.',es:'Voluntariado en refugios de animales del condado de LA. Cuida perros, gatos y animales pequeños. Perfecto para amantes de los animales que quieren experiencia en veterinaria o biología.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (16+ solo, 14+ with parent)', location:'Multiple LA County Shelters', url:'https://animalcare.lacounty.gov/volunteer/', requirements:{en:['Age 16+ independent (14+ with adult)','Waiver signed by parent/guardian','Orientation class required (free)','Min. 4 hrs/month commitment','Closed-toe shoes required'],es:['16+ independiente (14+ con adulto)','Exención firmada por padre/tutor','Clase de orientación requerida (gratis)','Compromiso mín. de 4 hrs/mes','Zapatos cerrados requeridos']}, color:'#E67E22' },
+  { id:16, type:'volunteer', season:'yearround', featured:false, org:'Lange Foundation Animal Rescue', title:{en:'Lange Foundation Dog Shelter Volunteer',es:'Voluntariado en Refugio Lange Foundation'}, desc:{en:'One of LA\'s most loved no-kill shelters. Volunteer walking dogs, socializing cats, helping at adoption fairs, and supporting foster programs. Great for students interested in animal science or veterinary medicine.',es:'Uno de los refugios sin sacrificio más queridos de LA. Voluntariado paseando perros, socializando gatos y apoyando ferias de adopción.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (15+)', location:'West LA / Brentwood', url:'https://www.langefoundation.org/volunteer', requirements:{en:['Age 15+','Submit online volunteer form','Orientation session required','Weekend availability preferred','Animal lovers welcome — no experience needed!'],es:['15 años o más','Formulario en línea','Sesión de orientación requerida','Disponibilidad de fin de semana preferida','¡Se aceptan amantes de los animales sin experiencia!']}, color:'#E67E22' },
+  { id:17, type:'volunteer', season:'yearround', featured:false, org:'Best Friends Animal Society', title:{en:'Best Friends Animal Society LA Volunteer',es:'Voluntariado Best Friends Animal Society LA'}, desc:{en:'Nationally recognized no-kill animal organization with a major LA hub. Volunteer in dog care, cat socialization, small animal handling, or adoption counseling. Excellent for pre-vet students.',es:'Organización nacional reconocida de animales sin sacrificio con sede importante en LA. Voluntariado en cuidado de perros, gatos y asesoría de adopción.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (18+ some roles, 16+ others)', location:'Mission Hills, Los Angeles', url:'https://bestfriends.org/sanctuary/ways-visit/volunteer', requirements:{en:['Age 16–18+ depending on role','Online application required','Background check for some roles','Training provided','Great pre-vet experience'],es:['16–18+ según el rol','Solicitud en línea requerida','Verificación de antecedentes para algunos roles','Entrenamiento proporcionado','Excelente experiencia pre-veterinaria']}, color:'#E67E22' },
+  { id:18, type:'volunteer', season:'yearround', featured:false, org:'YMCA of Metropolitan Los Angeles', title:{en:'YMCA Youth Volunteer & Leadership Program',es:'Programa de Voluntariado y Liderazgo Juvenil YMCA'}, desc:{en:'Volunteer at your local LA YMCA branch. Help coach youth sports, assist in after-school programs, support summer camps, and lead community events. Great for students interested in education, social work, or public health.',es:'Voluntariado en tu sucursal local del YMCA de LA. Ayuda a entrenar deportes juveniles, apoya programas después de escuela y dirige eventos comunitarios.'}, tags:['volunteer','yearround'], deadline:'Rolling', deadlineIso:null, pay:'Volunteer (hours cert.)', grades:'9–12 (14+)', location:'25+ branches across LA County', url:'https://www.ymcala.org/volunteer', requirements:{en:['Age 14+','Contact your local YMCA branch','Background check required (free)','Flexible scheduling available','Great for education/social work interest'],es:['14 años o más','Contacta tu sucursal YMCA local','Verificación de antecedentes requerida (gratis)','Horario flexible disponible','Ideal para interés en educación o trabajo social']}, color:'#E53E3E' },
+  { id:19, type:'volunteer', season:'summer', featured:false, org:'YMCA Camp High Sierra / Day Camps', title:{en:'YMCA Summer Camp Counselor-in-Training',es:'Consejero en Entrenamiento YMCA Summer Camp'}, desc:{en:'Train as a junior camp counselor at YMCA summer day camps across LA. Lead activities, support younger campers, and develop leadership and communication skills in a fun outdoor setting.',es:'Entrénate como consejero junior en los campamentos de día del YMCA. Lidera actividades, apoya a campistas más jóvenes y desarrolla habilidades de liderazgo.'}, tags:['volunteer','summer'], deadline:'Mar–May (for Summer)', deadlineIso:'2025-05-01', pay:'Volunteer (CIT Program)', grades:'10–12 (15+)', location:'Various LA YMCA camps', url:'https://www.ymcala.org/camps', requirements:{en:['Age 15–17','Application to CIT program','Attend mandatory training days','Full summer commitment preferred','Strong interest in working with youth'],es:['15–17 años','Solicitud al programa CIT','Asistir a días de entrenamiento obligatorios','Compromiso de verano completo preferido','Interés en trabajar con jóvenes']}, color:'#E53E3E' },
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────────
+let lang = 'en';
+const filters = { paid:'all', unpaid:'all', volunteer:'all' };
+
+function t(obj) { return typeof obj === 'string' ? obj : (obj[lang] || obj.en); }
+
+// ─── LANGUAGE ──────────────────────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === l));
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute('data-' + l) || el.getAttribute('data-en');
+    if (val) el.textContent = val;
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(el => {
+    el.placeholder = el.getAttribute('data-' + l + '-ph') || el.getAttribute('data-en-ph');
+  });
+  renderAll();
+}
+
+// ─── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const el = document.getElementById('tab-' + tab);
+  if (el) el.classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  tabs.forEach(t => { if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + tab + "'")) t.classList.add('active'); });
+  renderAll();
+}
+
+// ─── CARDS ─────────────────────────────────────────────────────────────────────
+function urgencyFromDeadline(isoDate) {
+  if (!isoDate) return 'future';
+  const u = getUrgency(isoDate);
+  if (u === 'critical') return 'soon';
+  if (u === 'soon') return 'ok';
+  return 'future';
+}
+
+function renderCard(p) {
+  const tagLabels = { paid:{en:'💰 Paid',es:'💰 Pagado'}, unpaid:{en:'🎓 Free',es:'🎓 Gratis'}, summer:{en:'☀️ Summer',es:'☀️ Verano'}, yearround:{en:'📆 Year-Round',es:'📆 Todo el Año'}, volunteer:{en:'❤️ Volunteer',es:'❤️ Voluntariado'} };
+  const tagClass = { paid:'tag-paid', unpaid:'tag-unpaid', summer:'tag-summer', yearround:'tag-yearround', volunteer:'tag-volunteer' };
+  const tags = p.tags.map(tag => `<span class="meta-tag ${tagClass[tag]}">${t(tagLabels[tag])}</span>`).join('');
+  const dot = urgencyFromDeadline(p.deadlineIso);
+  return `<div class="program-card" onclick="openModal(${p.id})">
+    <div class="card-accent" style="background:${p.color}"></div>
+    <div class="card-body">
+      <div class="card-top"><span class="card-org" style="color:${p.color}">${p.org}</span><span style="font-size:12px;color:var(--text-muted);font-weight:600;">${p.pay}</span></div>
+      <div class="card-title">${t(p.title)}</div>
+      <div class="card-desc">${t(p.desc)}</div>
+      <div class="card-meta">${tags}</div>
+      <div class="card-deadline"><div class="deadline-dot ${dot}"></div><span>${lang==='es'?'Fecha límite:':'Deadline:'} <strong>${p.deadline}</strong> · ${lang==='es'?'Grados':'Grades'} ${p.grades}</span></div>
+    </div>
+  </div>`;
+}
+
+function renderGrid(gridId, type, filter, search) {
+  const grid = document.getElementById(gridId); if (!grid) return;
+  const items = PROGRAMS.filter(p => {
+    if (p.type !== type) return false;
+    if (filter && filter !== 'all' && !p.tags.includes(filter)) return false;
+    if (search) { const s = search.toLowerCase(); if (!t(p.title).toLowerCase().includes(s) && !t(p.desc).toLowerCase().includes(s) && !p.org.toLowerCase().includes(s)) return false; }
+    return true;
+  });
+  grid.innerHTML = items.length ? items.map(renderCard).join('') : `<p style="color:var(--text-muted);padding:20px 0;">${lang==='es'?'No se encontraron programas.':'No programs found.'}</p>`;
+}
+
+function setFilter(type, filter, btn) {
+  filters[type] = filter;
+  btn.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards(type);
+}
+
+function filterCards(type) {
+  const search = (document.getElementById('search-'+type)||{}).value||'';
+  const map = { paid:'paid-grid', unpaid:'unpaid-grid', volunteer:'volunteer-grid' };
+  renderGrid(map[type], type, filters[type], search);
+}
+
+// ─── DEADLINES ─────────────────────────────────────────────────────────────────
+function renderDeadlines() {
+  const list = document.getElementById('deadline-list'); if (!list) return;
+  const labels = { critical:{en:'🔥 Act Now!',es:'🔥 ¡Actúa Ya!'}, soon:{en:'⚡ Coming Soon',es:'⚡ Próximamente'}, upcoming:{en:'✅ Plan Ahead',es:'✅ Planifica'}, expired:{en:'✓ Passed',es:'✓ Pasó'} };
+  list.innerHTML = DEADLINES.map(d => {
+    const u = getUrgency(d.iso);
+    return `<div class="deadline-row" onclick="window.open('${d.url}','_blank')">
+      <div class="date-badge"><div class="date-month">${d.month}</div><div class="date-day">${d.day}</div></div>
+      <div class="deadline-info"><div class="deadline-prog">${d.prog}</div><div class="deadline-detail">${t(d.detail)}</div></div>
+      <span class="urgency-badge urgency-${u}">${t(labels[u]||labels.upcoming)}</span>
+    </div>`;
+  }).join('');
+
+  // Last updated text
+  const lu = document.getElementById('last-updated-text');
+  if (lu) {
+    const now = new Date();
+    const fmt = now.toLocaleDateString(lang==='es'?'es-ES':'en-US', {year:'numeric',month:'long',day:'numeric'});
+    lu.textContent = (lang==='es'?'Última actualización: ':'Last updated: ') + fmt + (lang==='es'?' · Este sitio se actualiza automáticamente cada dos semanas.' : ' · This site auto-updates every two weeks.');
+  }
+}
+
+// ─── BANNER ────────────────────────────────────────────────────────────────────
+function renderBanner() {
+  const pills = document.getElementById('banner-pills'); if (!pills) return;
+  const active = DEADLINES.filter(d => d.iso && getUrgency(d.iso) !== 'expired');
+  pills.innerHTML = active.slice(0,5).map(d => {
+    const u = getUrgency(d.iso);
+    const cls = u === 'critical' ? 'urgent' : '';
+    return `<span class="deadline-pill ${cls}" onclick="showTab('deadlines')">${d.prog} — ${d.month} ${d.day}${u==='critical'?' 🔥':''}</span>`;
+  }).join('');
+  if (!active.length) pills.innerHTML = `<span class="deadline-pill">${lang==='es'?'No hay fechas límite próximas.':'No upcoming deadlines right now.'}</span>`;
+}
+
+// ─── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(id) {
+  const p = PROGRAMS.find(x => x.id===id); if (!p) return;
+  const req = (t(p.requirements)||[]).map(r=>`<li>${r}</li>`).join('');
+  document.getElementById('modal-body').innerHTML = `
+    <div style="background:${p.color};height:6px;border-radius:3px;margin-bottom:16px;"></div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:${p.color};margin-bottom:4px;">${p.org}</div>
+    <h2>${t(p.title)}</h2>
+    <div class="modal-org">${lang==='es'?'Ubicación:':'Location:'} ${p.location} · ${lang==='es'?'Compensación:':'Compensation:'} ${p.pay}</div>
+    <div class="modal-section"><h4>${lang==='es'?'Descripción':'About'}</h4><p>${t(p.desc)}</p></div>
+    <div class="modal-section"><h4>${lang==='es'?'Requisitos':'Requirements'}</h4><ul>${req}</ul></div>
+    <div class="modal-section" style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:100px;background:var(--bg);border-radius:8px;padding:12px;"><div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">${lang==='es'?'Fecha Límite':'Deadline'}</div><div style="font-size:16px;font-weight:700;margin-top:4px;">${p.deadline}</div></div>
+      <div style="flex:1;min-width:100px;background:var(--bg);border-radius:8px;padding:12px;"><div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">${lang==='es'?'Grados':'Grades'}</div><div style="font-size:16px;font-weight:700;margin-top:4px;">${p.grades}</div></div>
+    </div>
+    <button class="modal-apply" onclick="window.open('${p.url}','_blank')">${lang==='es'?'🚀 Ver Programa y Aplicar':'🚀 View Program & Apply'}</button>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openResumeModal(type) {
+  const T = {
+    first:{ en:{title:'First Internship Resume',sections:['Header: Name, Email, Phone, City (no full address)','Objective: 2–3 sentences on your goals and strengths','Education: School, GPA, relevant courses, graduation year','Extracurriculars: Clubs, sports, student government','Skills: Languages, computer skills, certifications','Honors/Awards: Academic awards, dean\'s list','Community Service: Hours, organization, your role'],tip:'No work experience? That\'s totally normal! Focus on what makes YOU unique — your courses, passions, and accomplishments.'}, es:{title:'Primer Currículum',sections:['Encabezado: Nombre, correo, teléfono, ciudad','Objetivo: 2–3 oraciones sobre tus metas','Educación: Escuela, GPA, cursos relevantes, graduación','Actividades: Clubes, deportes, gobierno estudiantil','Habilidades: Idiomas, computación, certificaciones','Reconocimientos: Premios académicos','Servicio Comunitario: Horas, organización, tu rol'],tip:'¿Sin experiencia laboral? ¡Es completamente normal! Enfócate en lo que te hace único.'} },
+    volunteer:{ en:{title:'Volunteer-Focused Resume',sections:['Header + Summary emphasizing service mindset','Volunteer Experience — lead with this section!','List: Organization, dates, hours, and specific impact','Leadership Roles: Team captain, club president, etc.','Education with relevant AP/IB courses','Languages (huge asset in LA!)','Awards & Recognition'],tip:'For hospital programs, prominently list any CPR, first aid, or health-related training.'}, es:{title:'Currículum de Voluntariado',sections:['Encabezado + Resumen que enfatice el servicio','Experiencia de voluntariado — ¡empieza con esto!','Lista: Organización, fechas, horas e impacto','Roles de liderazgo: Capitán, presidente de club','Educación con cursos AP/IB relevantes','Idiomas (¡gran ventaja en LA!)','Premios y reconocimientos'],tip:'Para programas hospitalarios, menciona cualquier formación en RCP o primeros auxilios.'} },
+    stem:{ en:{title:'STEM / Research Resume',sections:['Header + GitHub or portfolio link if available','Technical Skills: Languages, lab tools, software','Projects: Science fairs, class projects, personal builds','Research Experience (if any)','Education: GPA, AP/IB STEM courses','Awards: Science Olympiad, hackathons, math competitions','Online certifications (Coursera, Khan Academy)'],tip:'A school science fair project counts as research experience. Describe your methodology and findings.'}, es:{title:'Currículum STEM / Investigación',sections:['Encabezado + enlace a GitHub o portafolio si tienes','Habilidades técnicas: Lenguajes, herramientas de laboratorio','Proyectos: Ferias de ciencias, proyectos escolares','Experiencia en investigación','Educación: GPA, cursos AP/IB de STEM','Premios: Olimpiadas, hackatones','Certificaciones en línea'],tip:'Un proyecto de feria de ciencias cuenta como investigación. Describe tu metodología y resultados.'} },
+    leadership:{ en:{title:'Leadership / Business Resume',sections:['Header + LinkedIn profile URL','Professional Summary: 3 sentences about you, your style, goals','Leadership Experience: Club officer, team captain, event organizer','Work / Internship Experience (if any)','Volunteer & Community Impact','Education: GPA, business/social science courses','Skills: Public speaking, MS Office, event planning, bilingual?'],tip:"Programs like USC Bovard and Riordan want initiative. Include anything you STARTED or ORGANIZED, not just participated in."}, es:{title:'Currículum de Liderazgo',sections:['Encabezado + perfil de LinkedIn','Resumen profesional: 3 oraciones sobre ti y tus metas','Experiencia de liderazgo: Oficial de club, capitán, organizador','Experiencia laboral o de pasantía (si aplica)','Voluntariado e impacto comunitario','Educación: GPA, cursos de negocios/ciencias sociales','Habilidades: Oratoria, Office, ¿bilingüe?'],tip:'Programas como Bovard y Riordan quieren ver iniciativa. Incluye todo lo que INICIASTE u ORGANIZASTE.'} }
+  };
+  const tmpl = T[type][lang];
+  document.getElementById('modal-body').innerHTML = `
+    <h2 style="font-size:18px;margin-bottom:8px;">${tmpl.title}</h2>
+    <div class="modal-section"><h4>${lang==='es'?'Secciones a Incluir (en orden)':'Sections to Include (in order)'}</h4><ul>${tmpl.sections.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+    <div class="modal-section"><h4>${lang==='es'?'Consejo Pro':'Pro Tip'}</h4><p style="background:var(--gold-light);padding:12px;border-radius:8px;border-left:3px solid var(--gold);">${tmpl.tip}</p></div>
+    <div class="modal-section"><h4>${lang==='es'?'Formato Recomendado':'Recommended Format'}</h4><p>${lang==='es'?'Usa Google Docs o Microsoft Word. Fuente: Times New Roman o Calibri, 11–12pt. Márgenes 0.75". Guarda como PDF antes de enviar.':'Use Google Docs or Microsoft Word. Font: Times New Roman or Calibri, 11–12pt. Margins: 0.75". Save as PDF before submitting.'}</p></div>
+    <button class="modal-apply" onclick="closeModal()">${lang==='es'?'✓ Entendido — ¡A escribir mi currículum!':'✓ Got it — Time to write my resume!'}</button>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ─── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  const feat = PROGRAMS.filter(p => p.featured);
+  const fg = document.getElementById('featured-grid');
+  if (fg) fg.innerHTML = feat.map(renderCard).join('');
+  renderGrid('paid-grid','paid',filters.paid,'');
+  renderGrid('unpaid-grid','unpaid',filters.unpaid,'');
+  renderGrid('volunteer-grid','volunteer',filters.volunteer,'');
+  renderDeadlines();
+  renderBanner();
+}
+
+document.addEventListener('DOMContentLoaded', renderAll);
+</script>
+</body>
+</html>
