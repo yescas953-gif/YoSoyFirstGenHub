@@ -60,7 +60,7 @@ This project brings everything into **one simple, student-friendly platform**.
 
 ## 👤 Author
 
-Created by (your name)
+Created by Ms. yescas
 
 ---
 
